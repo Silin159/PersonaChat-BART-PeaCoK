@@ -1,4 +1,4 @@
-# BART-PeaCoK
+# PersonaChat-BART-PeaCoK
 This is the repository for ConvAI2 PersonaChat dialogue modeling with BART and PeaCoK knowledge graph augmentation.
 
 - Our preprocessed data and model checkpoint can be downloaded from [this link](https://drive.google.com/drive/folders/1kQGe3W3wFwQnM8J-yRenzhm3jyMQ5w34?usp=drive_link), please place the `data` folder under `ParlAI/`, and place the files in the `checkpoints` folder under this root directory.
