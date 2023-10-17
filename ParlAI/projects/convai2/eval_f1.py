@@ -26,7 +26,7 @@ def setup_args(parser=None, type='original', peacok=''):
         datatype='valid',
         hide_labels=False,
         dict_tokenizer='split',
-        metrics='f1',
+        metrics='f1,bleu',
     )
     return parser
 
@@ -36,8 +36,10 @@ def eval_f1(opt, print_parser, output_file, beam=1):
     report = eval_model(opt, print_parser)
     print('============================')
     print(f"FINAL F1:  {report['f1']}")
+    print(f"FINAL BLEU:  {report['bleu']}")
     with open(os.path.join(output_file, f"f1_beam{beam}.txt"), 'w') as out:
         out.write(f"FINAL F1:  {report['f1']}")
+        out.write(f"FINAL BLEU:  {report['bleu']}")
 
 
 if __name__ == '__main__':
