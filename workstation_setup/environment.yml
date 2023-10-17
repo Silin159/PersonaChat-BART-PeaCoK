@@ -13,3 +13,4 @@ dependencies:
     - pytorch-ignite==0.4.9
     - tensorboardX
     - accelerate
+    - nltk
