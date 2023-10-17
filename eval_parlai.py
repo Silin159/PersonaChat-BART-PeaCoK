@@ -241,7 +241,7 @@ class TransformerAgent(Agent):
                 out_ids,
                 skip_special_tokens=True, 
                 spaces_between_special_tokens=False,
-                clean_up_tokenization_spaces=(self.args.eval_type != 'f1')
+                clean_up_tokenization_spaces=False
             )
 
             ans = out_text[0].strip()
@@ -279,7 +279,7 @@ if __name__ == '__main__':
     if opt['eval_type'] == "hits@1":
         setup_args = setup_args_hits(None, type=opt["type"], peacok=opt["peacok"])
         eval_fct = partial(eval_hits, print_parser=setup_args, output_file=opt["model_checkpoint"])
-    elif opt['eval_type'] == "f1":
+    elif opt['eval_type'] == "f1,bleu":
         setup_args = setup_args_f1(None, type=opt["type"], peacok=opt["peacok"])
         eval_fct = partial(
             eval_f1, print_parser=setup_args, output_file=opt["model_checkpoint"], beam=opt["beam"]
