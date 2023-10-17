@@ -23,25 +23,28 @@ from parlai.utils.thread import SharedTable
 from parlai.utils.typing import TScalar
 
 
-DEFAULT_METRICS = {'correct', 'bleu-4', 'accuracy', 'f1'}
+DEFAULT_METRICS = {'correct', 'bleu', 'accuracy', 'f1'}
 ROUGE_METRICS = {'rouge-1', 'rouge-2', 'rouge-L'}
-BLEU_METRICS = {'bleu-1', 'bleu-2', 'bleu-3'}
+BLEU_METRICS = {'bleu-1', 'bleu-2', 'bleu-3', 'bleu-4'}
 ALL_METRICS = DEFAULT_METRICS | ROUGE_METRICS | BLEU_METRICS
 
+from nltk.translate import bleu_score as nltkbleu
 
+'''
 try:
     from nltk.translate import bleu_score as nltkbleu
 except ImportError:
     # User doesn't have nltk installed, so we can't use it for bleu
     # We'll just turn off things, but we might want to warn the user
     nltkbleu = None
-
+'''
 try:
     import rouge
 except ImportError:
     # User doesn't have py-rouge installed, so we can't use it.
     # We'll just turn off rouge computations
     rouge = None
+
 
 re_art = re.compile(r'\b(a|an|the)\b')
 re_punc = re.compile(r'[!"#$%&()*+,-./:;<=>?@\[\]\\^`{|}~_\']')
@@ -443,6 +446,8 @@ class Metrics(object):
                 f1 = _f1_score(prediction, labels)
             bleu_scores = {}
             rouge1 = rouge2 = rougeL = None
+            if 'bleu' in self.metrics_list:
+                bleu_scores['bleu'] = _bleu(prediction, labels)
             if 'bleu-4' in self.metrics_list:
                 bleu_scores['bleu-4'] = _bleu(prediction, labels)
             if 'bleu-1' in self.metrics_list:
@@ -455,6 +460,9 @@ class Metrics(object):
                 if 'f1' in self.metrics:
                     self.metrics['f1'] += f1
                     self.metrics['f1_cnt'] += 1
+                if 'bleu' in self.metrics:
+                    self.metrics['bleu'] += bleu_scores.pop('bleu')
+                    self.metrics['bleu_cnt'] += 1
                 if 'bleu-4' in self.metrics:
                     self.metrics['bleu-4'] += bleu_scores.pop('bleu-4')
                     self.metrics['bleu-4_cnt'] += 1
@@ -517,6 +525,10 @@ class Metrics(object):
                 if 'f1' in self.metrics_list:
                     m['f1'] = round_sigfigs(
                         self.metrics['f1'] / max(1, self.metrics['f1_cnt']), 4
+                    )
+                if 'bleu' in self.metrics_list:
+                    m['bleu'] = round_sigfigs(
+                        self.metrics['bleu'] / max(1, self.metrics['bleu_cnt']), 4
                     )
             if self.flags['has_text_cands']:
                 for k in self.eval_pr:
