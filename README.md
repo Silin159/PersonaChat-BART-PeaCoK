@@ -13,5 +13,4 @@ conda activate bart_eval
 ## Model Evaluation
 ```
 make eval-f1
-make eval-hits1
 ```
